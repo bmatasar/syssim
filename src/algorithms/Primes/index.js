@@ -1,46 +1,45 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Box, Button, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { PlayArrow as PlayIcon, Replay as ReplayIcon } from '@mui/icons-material';
 import Canvas from 'components/Canvas';
 import SystolicArray from 'lib/SystolicArray';
-import { parseNumbers } from 'lib/utils';
 import Transition from 'components/Transition';
 
 const TRANSITION = `
-p' = p * x + a
-x' = x
+if a <= 0 then
+  a’ = a
+else if p == 0 then
+  p = a
+  a’ = -a
+else if a % p == 0 then
+  a’ = 0
+else
+  a’ = a
 `;
 
-const PolynomialEval = () => {
+const Primes = () => {
   const [systolicArray, setSystolicArray] = useState(null);
 
-  const [coefficients, setCoefficients] = useState('1,2,3');
-  const [input, setInput] = useState('1,2,3,4,5');
   const [inputValues, setInputValues] = useState([]);
 
-  const validCoefficients = parseNumbers(coefficients)?.length > 0;
-  const validInput = parseNumbers(input)?.length > 0;
-
   const handleRestart = () => {
-    const coeffs = parseNumbers(coefficients);
-    const inputValues = parseNumbers(input);
-    if (coeffs?.length < 1 || inputValues?.length < 1) return;
+    const inputValues = [];
+    for (let i = 2; i < 25; i++) inputValues.push(i);
 
     const descriptor = {
-      colsCount: coeffs.length,
+      startIndex: 1,
+      colsCount: 7,
       registers: [
         {
-          name: 'a',
-          init: ({ col }) => coeffs[col],
+          name: 'p',
+          init: 0,
+          fx: ({ a, p }) => (a > 0 && !p ? a : p),
         },
       ],
       wires: [
         {
-          name: 'p',
-          fx: ({ a, x, p }) => p * x + a, // Transition function. It could be missing if there is no change in the value
-        },
-        {
-          name: 'x',
+          name: 'a',
+          fx: ({ a, p }) => (a <= 0 ? a : p === 0 ? -a : a % p ? a : 0),
         },
       ],
     };
@@ -50,9 +49,9 @@ const PolynomialEval = () => {
   };
 
   const handleStep = () => {
-    const values = { p: [0], x: [0] };
+    const values = { a: [0] };
     if (inputValues.length > 0) {
-      values.x[0] = inputValues[0];
+      values.a[0] = inputValues[0];
       setInputValues(inputValues.slice(1));
     }
     setSystolicArray(systolicArray.moveNext(values));
@@ -72,28 +71,7 @@ const PolynomialEval = () => {
   return (
     <Stack direction="column" p={2} spacing={2} flex={1}>
       <Stack direction="row" spacing={2} alignItems="flex-start">
-        <TextField
-          size="small"
-          label="Coefficients"
-          helperText="Comma-separated numbers"
-          value={coefficients}
-          error={parseNumbers(coefficients)?.length < 1}
-          onChange={event => setCoefficients(event.target.value)}
-        />
-        <TextField
-          size="small"
-          label="Input"
-          helperText="Comma-separated numbers"
-          value={input}
-          error={parseNumbers(input)?.length < 1}
-          onChange={event => setInput(event.target.value)}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={!validCoefficients || !validInput}
-          onClick={handleRestart}
-        >
+        <Button variant="contained" color="primary" onClick={handleRestart}>
           Restart
           <ReplayIcon />
         </Button>
@@ -110,7 +88,7 @@ const PolynomialEval = () => {
             <Typography>Step: {systolicArray.step}</Typography>
             <Typography>Input: {inputValues.join(', ')}</Typography>
           </Stack>
-          <Box p={2} overflowX="scroll">
+          <Box p={2} overflow="scroll">
             <Canvas draw={draw} {...canvasSize} />
           </Box>
         </>
@@ -119,4 +97,4 @@ const PolynomialEval = () => {
   );
 };
 
-export default PolynomialEval;
+export default Primes;

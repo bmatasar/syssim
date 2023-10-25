@@ -4,6 +4,12 @@ import { PlayArrow as PlayIcon, Replay as ReplayIcon } from '@mui/icons-material
 import SystolicArray, { BOTTOM_UP, RIGHT_LEFT } from 'lib/SystolicArray';
 import { parseNumbers } from 'lib/utils';
 import Canvas from 'components/Canvas';
+import Transition from 'components/Transition';
+
+const TRANSITION = `
+v' = v + a * u
+u' = u
+`;
 
 const MatrixVector1D = () => {
   const [systolicArray, setSystolicArray] = useState(null);
@@ -98,13 +104,7 @@ const MatrixVector1D = () => {
           <PlayIcon />
         </Button>
         <Box flex={1} />
-        <Stack direction="row" alignItems="center" spacing={2} px={2} border={1} borderColor="red">
-          <Typography>Transition:</Typography>
-          <Stack direction="column">
-            <code>v' = v + a * u</code>
-            <code>u' = u</code>
-          </Stack>
-        </Stack>
+        <Transition code={TRANSITION} />
       </Stack>
       {systolicArray && (
         <>

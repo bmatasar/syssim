@@ -12,9 +12,10 @@ import {
   Typography,
 } from '@mui/material';
 import logo from './logo.svg';
-import ElementaryCA from './algorithms/ElementaryCA';
-import PolynomialEval from './algorithms/PolynomialEval';
+import ElementaryCA from 'algorithms/ElementaryCA';
 import MatrixVector1D from 'algorithms/MatrixVector1D';
+import PolynomialEval from 'algorithms/PolynomialEval';
+import Primes from 'algorithms/Primes';
 
 const StyledImg = styled('img')(({ theme }) => ({
   height: 40,
@@ -36,6 +37,7 @@ const ALGORITHMS = [
     id: 'systolic',
     label: 'Systolic Algorithms',
     algorithms: [
+      { id: 'primes', label: 'Finding Primes', component: Primes },
       { id: 'polyeval', label: 'Polynomial Eval', component: PolynomialEval },
       { id: 'matrixvector1d', label: 'Matrix Vector Multiplication', component: MatrixVector1D },
     ],
