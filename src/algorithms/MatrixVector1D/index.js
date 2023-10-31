@@ -1,8 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Box, Button, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { PlayArrow as PlayIcon, Replay as ReplayIcon } from '@mui/icons-material';
 import SystolicArray, { BOTTOM_UP, RIGHT_LEFT } from 'lib/SystolicArray';
-import { parseNumbers } from 'lib/utils';
 import Canvas from 'components/Canvas';
 import Transition from 'components/Transition';
 
@@ -11,23 +10,36 @@ v' = v + a * u
 u' = u
 `;
 
+const A = [
+  [1, 1, 1, 1],
+  [1, -1, 1, -1],
+  [1, 0, 1, 0],
+];
+const U = [1, 2, 3, 4];
+
 const MatrixVector1D = () => {
   const [systolicArray, setSystolicArray] = useState(null);
 
-  const [coefficients, setCoefficients] = useState('');
-  const [input, setInput] = useState('');
-  const [inputValues, setInputValues] = useState([]);
-
-  const validCoefficients = parseNumbers(coefficients)?.length > 0;
-  const validInput = parseNumbers(input)?.length > 0;
+  const [matrix, setMatrix] = useState(null);
+  const [vector, setVector] = useState(null);
 
   const handleRestart = () => {
-    const coeffs = parseNumbers(coefficients);
-    const inputValues = parseNumbers(input);
-    if (coeffs?.length < 1 || inputValues?.length < 1) return;
+    const a = A.map((row, index) => {
+      row = [...row];
+      for (let i = 1; i < A.length - index; i++) {
+        row.unshift(0);
+      }
+      return row;
+    });
+    const u = [...U];
+    for (let i = 1; i < A.length; i++) {
+      u.push(0);
+    }
+    setMatrix(a);
+    setVector(u);
 
     const descriptor = {
-      rowsCount: coeffs.length,
+      rowsCount: a.length,
       startIndex: 1,
       registers: [
         {
@@ -47,17 +59,17 @@ const MatrixVector1D = () => {
       ],
     };
 
-    setInputValues(inputValues);
     setSystolicArray(SystolicArray.create(descriptor));
   };
 
   const handleStep = () => {
-    const values = { a: [0], u: [0] };
-    if (inputValues.length > 0) {
-      values.u[0] = inputValues[0];
-      setInputValues(inputValues.slice(1));
+    if (vector.length) {
+      const values = { a: matrix.map(row => (row.length ? row[0] : 0)), u: vector.slice(0, 1) };
+      console.log('New values', values);
+      setMatrix(matrix.map(row => row.slice(1)));
+      setVector(vector.slice(1));
+      setSystolicArray(systolicArray.moveNext(values));
     }
-    setSystolicArray(systolicArray.moveNext(values));
   };
 
   const canvasSize = useMemo(() => systolicArray?.preferredSize(), [systolicArray]);
@@ -74,28 +86,7 @@ const MatrixVector1D = () => {
   return (
     <Stack direction="column" p={2} spacing={2} flex={1}>
       <Stack direction="row" spacing={2} alignItems="flex-start">
-        <TextField
-          size="small"
-          label="Coefficients"
-          helperText="Comma-separated numbers"
-          value={coefficients}
-          error={parseNumbers(coefficients)?.length < 1}
-          onChange={event => setCoefficients(event.target.value)}
-        />
-        <TextField
-          size="small"
-          label="Input"
-          helperText="Comma-separated numbers"
-          value={input}
-          error={parseNumbers(input)?.length < 1}
-          onChange={event => setInput(event.target.value)}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={!validCoefficients || !validInput}
-          onClick={handleRestart}
-        >
+        <Button variant="contained" color="primary" onClick={handleRestart}>
           Restart
           <ReplayIcon />
         </Button>
@@ -108,13 +99,29 @@ const MatrixVector1D = () => {
       </Stack>
       {systolicArray && (
         <>
-          <Stack direction="row" spacing={2} alignItems="flex-start">
-            <Typography>Step: {systolicArray.step}</Typography>
-            <Typography>Input: {inputValues.join(', ')}</Typography>
+          <Typography>Step: {systolicArray.step}</Typography>
+          <Stack direction="row" spacing={8} alignItems="flex-start">
+            <Box p={2} overflowX="scroll">
+              <Canvas draw={draw} {...canvasSize} />
+            </Box>
+            <Stack spacing={2}>
+              <Typography whiteSpace="pre" fontFamily="monospace">
+                A:{' '}
+                {matrix
+                  .map((row, rowIndex) =>
+                    row
+                      .map((cell, colIndex) =>
+                        rowIndex + colIndex < A.length - systolicArray.step - 1 ? '\u2022' : cell,
+                      )
+                      .join(', '),
+                  )
+                  .join('\n   ')}
+              </Typography>
+              <Typography whiteSpace="pre" fontFamily="monospace">
+                U: {vector.join(', ')}
+              </Typography>
+            </Stack>
           </Stack>
-          <Box p={2} overflowX="scroll">
-            <Canvas draw={draw} {...canvasSize} />
-          </Box>
         </>
       )}
     </Stack>

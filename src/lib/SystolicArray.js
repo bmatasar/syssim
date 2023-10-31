@@ -8,13 +8,13 @@
  *    registers: [{
  *      name: 'a',
  *      init: ({col, row}) => coefficients[3 - col],  // It could be also a value. If missing, 0 will be used
- *      fx: ({a, x, p}) => a  // Transition function. It could be missing if there is no change in the value
+ *      fx: ({a, x, p}, {row, col}) => a  // Transition function. It could be missing if there is no change in the value
  *    }],
  *    wires: [{
  *      name: 'p',
  *      direction: LEFT_RIGHT, // Default is LEFT_RIGHT
  *      delays: 1,  // Default value is 1,
- *      fx: ({a, x, p}) => p * x + a  // Transition function. It could be missing if there is no change in the value
+ *      fx: ({a, x, p}, {row, col}) => p * x + a  // Transition function. It could be missing if there is no change in the value
  *    }, {
  *      name: 'x',
  *    }]
@@ -216,10 +216,13 @@ export default class SystolicArray {
         }
         // Call the transitions
         for (const r of registers) {
-          cell[r.name] = r.fx(values);
+          cell[r.name] = r.fx(values, { row, col });
         }
         for (const w of wires) {
-          cell[w.name].out = [w.fx(values), ...this.cells[row][col][w.name].out.slice(0, -1)];
+          cell[w.name].out = [
+            w.fx(values, { row, col }),
+            ...this.cells[row][col][w.name].out.slice(0, -1),
+          ];
         }
       }
     }
