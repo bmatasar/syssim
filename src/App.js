@@ -13,6 +13,9 @@ import {
 } from '@mui/material';
 import logo from './logo.svg';
 import ElementaryCA from 'algorithms/ElementaryCA';
+import FIRBidirectional2Slow from 'algorithms/FIRBidirectional2Slow';
+import FIRInputFaster from 'algorithms/FIRInputFaster';
+import FIROutputFaster from 'algorithms/FIROutputFaster';
 import MatrixVector1D from 'algorithms/MatrixVector1D';
 import PolynomialEval from 'algorithms/PolynomialEval';
 import Primes from 'algorithms/Primes';
@@ -40,6 +43,14 @@ const ALGORITHMS = [
       { id: 'primes', label: 'Finding Primes', component: Primes },
       { id: 'polyeval', label: 'Polynomial Eval', component: PolynomialEval },
       { id: 'matrixvector1d', label: 'Matrix Vector Multiplication', component: MatrixVector1D },
+      { id: 'firoutputfaster', label: 'FIR Output Faster', component: FIROutputFaster },
+      { id: 'firinputfaster', label: 'FIR Input Faster', component: FIRInputFaster },
+      {
+        id: 'firbidirectional2slow',
+        label: 'FIR Bidirectional 2-Slow',
+        component: FIRBidirectional2Slow,
+      },
+      FIRBidirectional2Slow,
     ],
   },
 ];

@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { PlayArrow as PlayIcon, Replay as ReplayIcon } from '@mui/icons-material';
-import SystolicArray, { BOTTOM_UP, RIGHT_LEFT } from 'lib/SystolicArray';
 import Canvas from 'components/Canvas';
 import Transition from 'components/Transition';
+import SystolicArray, { BOTTOM_UP, RIGHT_LEFT } from 'lib/SystolicArray';
 
 const TRANSITION = `
 v' = v + a * u

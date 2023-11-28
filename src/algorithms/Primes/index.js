@@ -2,8 +2,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { PlayArrow as PlayIcon, Replay as ReplayIcon } from '@mui/icons-material';
 import Canvas from 'components/Canvas';
-import SystolicArray from 'lib/SystolicArray';
 import Transition from 'components/Transition';
+import SystolicArray from 'lib/SystolicArray';
 
 const TRANSITION = `
 if a <= 0 then

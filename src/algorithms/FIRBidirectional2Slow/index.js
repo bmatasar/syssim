@@ -3,20 +3,21 @@ import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { PlayArrow as PlayIcon, Replay as ReplayIcon } from '@mui/icons-material';
 import Canvas from 'components/Canvas';
 import Transition from 'components/Transition';
-import SystolicArray from 'lib/SystolicArray';
+import SystolicArray, { RIGHT_LEFT } from 'lib/SystolicArray';
 import { parseNumbers } from 'lib/utils';
 
 const TRANSITION = `
-p' = p * x + a
 x' = x
+y' = y + a * x
 `;
 
-const PolynomialEval = () => {
+const FIRBidirectional2Slow = () => {
   const [systolicArray, setSystolicArray] = useState(null);
 
-  const [coefficients, setCoefficients] = useState('1,2,3');
+  const [coefficients, setCoefficients] = useState('1,2,3,4');
   const [input, setInput] = useState('1,2,3,4,5');
   const [inputValues, setInputValues] = useState([]);
+  const [outputValues, setOutputValues] = useState([]);
 
   const validCoefficients = parseNumbers(coefficients)?.length > 0;
   const validInput = parseNumbers(input)?.length > 0;
@@ -36,8 +37,9 @@ const PolynomialEval = () => {
       ],
       wires: [
         {
-          name: 'p',
-          fx: ({ a, x, p }) => p * x + a, // Transition function. It could be missing if there is no change in the value
+          name: 'y',
+          direction: RIGHT_LEFT,
+          fx: ({ a, x, y }) => y + a * x, // Transition function. It could be missing if there is no change in the value
         },
         {
           name: 'x',
@@ -45,17 +47,24 @@ const PolynomialEval = () => {
       ],
     };
 
+    // Insert delays in the input
+    for (let i = 0, n = inputValues.length - 1; i < n; i++)
+      inputValues.splice(i * 2 + 1, 0, 0);
     setInputValues(inputValues);
     setSystolicArray(SystolicArray.create(descriptor));
+    setOutputValues([]);
   };
 
   const handleStep = () => {
-    const values = { p: [0], x: [0] };
+    const values = { y: [0], x: [0] };
     if (inputValues.length > 0) {
       values.x[0] = inputValues[0];
       setInputValues(inputValues.slice(1));
     }
-    setSystolicArray(systolicArray.moveNext(values));
+    const nextSystolicArray = systolicArray.moveNext(values);
+    setSystolicArray(nextSystolicArray);
+    const lastCell = nextSystolicArray.getCell(0);
+    setOutputValues([lastCell?.y?.out[0] ?? 0, ...outputValues]);
   };
 
   const canvasSize = useMemo(() => systolicArray?.preferredSize(), [systolicArray]);
@@ -106,10 +115,9 @@ const PolynomialEval = () => {
       </Stack>
       {systolicArray && (
         <>
-          <Stack direction="row" spacing={2} alignItems="flex-start">
-            <Typography>Step: {systolicArray.step}</Typography>
-            <Typography>Input: {inputValues.join(', ')}</Typography>
-          </Stack>
+          <Typography>Step: {systolicArray.step}</Typography>
+          <Typography>Input: {inputValues.join(', ')}</Typography>
+          <Typography>Output: {outputValues.join(', ')}</Typography>
           <Box p={2} overflowX="scroll">
             <Canvas draw={draw} {...canvasSize} />
           </Box>
@@ -119,4 +127,4 @@ const PolynomialEval = () => {
   );
 };
 
-export default PolynomialEval;
+export default FIRBidirectional2Slow;

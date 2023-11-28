@@ -146,11 +146,23 @@ export default class SystolicArray {
     return wire.direction === TOP_DOWN || wire.direction === BOTTOM_UP;
   }
 
-  cellValues(cell) {
-    const values = {};
-    for (const key in cell) {
-      values[key] = cell[key]?.in ?? cell[key] ?? 0;
+  getCell(...index) {
+    let row = 0, col = 0;
+    if (this.descriptor.rowsCount > 1) {
+      if (!index.length)
+        return null;
+      row = index.shift();
     }
+    if (this.descriptor.colsCount > 1) {
+      if (!index.length)
+        return null;
+      col = index.shift();
+    }
+    if (row < 0)
+      row += this.descriptor.rowsCount;
+    if (col < 0)
+      col += this.descriptor.colsCount;
+    return this.cells[row][col];
   }
 
   prevPos(row, col, direction) {
