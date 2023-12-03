@@ -45,12 +45,18 @@ const ALGORITHMS = [
       { id: 'primes', label: 'Finding Primes', component: Primes },
       { id: 'polyeval', label: 'Polynomial Eval', component: PolynomialEval },
       { id: 'matrixvector1d', label: 'Matrix Vector Multiplication', component: MatrixVector1D },
+    ],
+  },
+  {
+    id: 'filters',
+    label: 'Filters',
+    algorithms: [
       { id: 'firrippling', label: 'FIR with Rippling', component: FIRRippling },
       { id: 'firbroadcast', label: 'FIR with Broadcast', component: FIRBroadcast },
       { id: 'firoutputfaster', label: 'FIR Output Faster', component: FIROutputFaster },
       { id: 'firinputfaster', label: 'FIR Input Faster', component: FIRInputFaster },
       {
-        id: 'firbidirectional2slow',
+        id: 'firbidir2slow',
         label: 'FIR Bidirectional 2-Slow',
         component: FIRBidirectional2Slow,
       },
