@@ -80,9 +80,6 @@ export default class SystolicArray {
   static create(descriptor) {
     descriptor = normalize(descriptor);
     if (descriptor === null) throw new Error('Invalid descriptor');
-    for (const w of descriptor.wires) {
-      if (w.delays < 1) throw new Error('Rippling/Broadcast not supported yet');
-    }
     const { rowsCount, colsCount, registers, wires } = descriptor;
 
     const cells = new Array(rowsCount);
@@ -147,21 +144,18 @@ export default class SystolicArray {
   }
 
   getCell(...index) {
-    let row = 0, col = 0;
+    let row = 0,
+      col = 0;
     if (this.descriptor.rowsCount > 1) {
-      if (!index.length)
-        return null;
+      if (!index.length) return null;
       row = index.shift();
     }
     if (this.descriptor.colsCount > 1) {
-      if (!index.length)
-        return null;
+      if (!index.length) return null;
       col = index.shift();
     }
-    if (row < 0)
-      row += this.descriptor.rowsCount;
-    if (col < 0)
-      col += this.descriptor.colsCount;
+    if (row < 0) row += this.descriptor.rowsCount;
+    if (col < 0) col += this.descriptor.colsCount;
     return this.cells[row][col];
   }
 
@@ -214,6 +208,60 @@ export default class SystolicArray {
       }
     }
 
+    // Propagate the broadcast/rippling
+    for (const w of wires) {
+      if (!w.delays) {
+        switch (w.direction) {
+          case LEFT_RIGHT:
+            for (let row = 0; row < rowsCount; row++) {
+              let value = input[w.name][row];
+              for (let col = 0; col < colsCount; col++) {
+                const cell = cells[row][col];
+                cell[w.name] = { in: value };
+                // Prepare the in values of the cell
+                const values = {};
+                for (const r of registers) {
+                  values[r.name] = cell[r.name];
+                }
+                for (const w of wires) {
+                  values[w.name] = cell[w.name].in;
+                }
+                cell[w.name].out = [
+                  w.fx(values, { row, col }),
+                  ...this.cells[row][col][w.name].out.slice(0, -1),
+                ];
+                value = cell[w.name].out[0];
+              }
+            }
+            break;
+          case RIGHT_LEFT:
+            for (let row = 0; row < rowsCount; row++) {
+              let value = input[w.name][row];
+              for (let col = colsCount; --col >= 0; ) {
+                const cell = cells[row][col];
+                cell[w.name] = { in: value };
+                // Prepare the in values of the cell
+                const values = {};
+                for (const r of registers) {
+                  values[r.name] = cell[r.name];
+                }
+                for (const w of wires) {
+                  values[w.name] = cell[w.name].in;
+                }
+                cell[w.name].out = [
+                  w.fx(values, { row, col }),
+                  ...this.cells[row][col][w.name].out.slice(0, -1),
+                ];
+                value = cell[w.name].out[0];
+              }
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
     // Update systolic output
     for (let row = 0; row < rowsCount; row++) {
       for (let col = 0; col < colsCount; col++) {
@@ -231,10 +279,12 @@ export default class SystolicArray {
           cell[r.name] = r.fx(values, { row, col });
         }
         for (const w of wires) {
-          cell[w.name].out = [
-            w.fx(values, { row, col }),
-            ...this.cells[row][col][w.name].out.slice(0, -1),
-          ];
+          if (w.delays) {
+            cell[w.name].out = [
+              w.fx(values, { row, col }),
+              ...this.cells[row][col][w.name].out.slice(0, -1),
+            ];
+          }
         }
       }
     }
@@ -282,8 +332,8 @@ export default class SystolicArray {
           rowsCount === 1
             ? `P${startIndex + col}`
             : colsCount === 1
-            ? `P${startIndex + row}`
-            : `P${startIndex + row},${startIndex + col}`,
+              ? `P${startIndex + row}`
+              : `P${startIndex + row},${startIndex + col}`,
           x + cellSize.width / 2,
           y + CELL_TITLE_HEIGHT / 2,
           { fontSize: 20 },

@@ -11,7 +11,7 @@ x' = x
 y' = y + a * x
 `;
 
-const FIRBidirectional2Slow = () => {
+const FIRRippling = () => {
   const [systolicArray, setSystolicArray] = useState(null);
 
   const [coefficients, setCoefficients] = useState('1,2,3,4');
@@ -39,6 +39,7 @@ const FIRBidirectional2Slow = () => {
         {
           name: 'y',
           direction: RIGHT_LEFT,
+          delays: 0,
           fx: ({ a, x, y }) => y + a * x, // Transition function. It could be missing if there is no change in the value
         },
         {
@@ -47,8 +48,6 @@ const FIRBidirectional2Slow = () => {
       ],
     };
 
-    // Insert delays in the input
-    for (let i = 0, n = inputValues.length - 1; i < n; i++) inputValues.splice(i * 2 + 1, 0, 0);
     setInputValues(inputValues);
     setSystolicArray(SystolicArray.create(descriptor));
     setOutputValues([]);
@@ -126,4 +125,4 @@ const FIRBidirectional2Slow = () => {
   );
 };
 
-export default FIRBidirectional2Slow;
+export default FIRRippling;

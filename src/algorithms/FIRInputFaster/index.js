@@ -61,7 +61,7 @@ const FIRInputFaster = () => {
     const nextSystolicArray = systolicArray.moveNext(values);
     setSystolicArray(nextSystolicArray);
     const lastCell = nextSystolicArray.getCell(-1);
-    setOutputValues([lastCell?.y?.out[0] ?? 0, ...outputValues]);
+    setOutputValues([...outputValues, lastCell?.y?.out[0] ?? 0]);
   };
 
   const canvasSize = useMemo(() => systolicArray?.preferredSize(), [systolicArray]);
@@ -115,7 +115,7 @@ const FIRInputFaster = () => {
           <Typography>Step: {systolicArray.step}</Typography>
           <Typography>Input: {inputValues.join(', ')}</Typography>
           <Typography>Output: {outputValues.join(', ')}</Typography>
-          <Box p={2} overflowX="scroll">
+          <Box p={2} overflow="scroll">
             <Canvas draw={draw} {...canvasSize} />
           </Box>
         </>

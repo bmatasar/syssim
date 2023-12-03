@@ -101,7 +101,7 @@ const MatrixVector1D = () => {
         <>
           <Typography>Step: {systolicArray.step}</Typography>
           <Stack direction="row" spacing={8} alignItems="flex-start">
-            <Box p={2} overflowX="scroll">
+            <Box p={2} overflow="scroll">
               <Canvas draw={draw} {...canvasSize} />
             </Box>
             <Stack spacing={2}>

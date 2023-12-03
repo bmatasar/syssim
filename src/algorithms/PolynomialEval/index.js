@@ -110,7 +110,7 @@ const PolynomialEval = () => {
             <Typography>Step: {systolicArray.step}</Typography>
             <Typography>Input: {inputValues.join(', ')}</Typography>
           </Stack>
-          <Box p={2} overflowX="scroll">
+          <Box p={2} overflow="scroll">
             <Canvas draw={draw} {...canvasSize} />
           </Box>
         </>

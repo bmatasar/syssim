@@ -14,8 +14,10 @@ import {
 import logo from './logo.svg';
 import ElementaryCA from 'algorithms/ElementaryCA';
 import FIRBidirectional2Slow from 'algorithms/FIRBidirectional2Slow';
+import FIRBroadcast from 'algorithms/FIRBroadcast';
 import FIRInputFaster from 'algorithms/FIRInputFaster';
 import FIROutputFaster from 'algorithms/FIROutputFaster';
+import FIRRippling from 'algorithms/FIRRippling';
 import MatrixVector1D from 'algorithms/MatrixVector1D';
 import PolynomialEval from 'algorithms/PolynomialEval';
 import Primes from 'algorithms/Primes';
@@ -43,6 +45,8 @@ const ALGORITHMS = [
       { id: 'primes', label: 'Finding Primes', component: Primes },
       { id: 'polyeval', label: 'Polynomial Eval', component: PolynomialEval },
       { id: 'matrixvector1d', label: 'Matrix Vector Multiplication', component: MatrixVector1D },
+      { id: 'firrippling', label: 'FIR with Rippling', component: FIRRippling },
+      { id: 'firbroadcast', label: 'FIR with Broadcast', component: FIRBroadcast },
       { id: 'firoutputfaster', label: 'FIR Output Faster', component: FIROutputFaster },
       { id: 'firinputfaster', label: 'FIR Input Faster', component: FIRInputFaster },
       {
@@ -50,7 +54,6 @@ const ALGORITHMS = [
         label: 'FIR Bidirectional 2-Slow',
         component: FIRBidirectional2Slow,
       },
-      FIRBidirectional2Slow,
     ],
   },
 ];
