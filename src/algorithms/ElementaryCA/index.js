@@ -71,7 +71,13 @@ const ElementaryCA = () => {
   const generations = automaton.generations.map((generation, index) => {
     const genIndex = automaton.current - automaton.generations.length + index;
     return (
-      <Stack key={genIndex} direction="row" justifyContent="center">
+      <Stack
+        key={genIndex}
+        direction="row"
+        sx={{
+          justifyContent: 'center',
+        }}
+      >
         {generation.map((value, i) => (value ? <CellBlack key={i} /> : <CellWhite key={i} />))}
       </Stack>
     );
@@ -87,8 +93,21 @@ const ElementaryCA = () => {
   }
 
   return (
-    <Stack direction="column" p={2} spacing={2} flex={1}>
-      <Stack direction="row" spacing={2} alignItems="flex-start">
+    <Stack
+      direction="column"
+      spacing={2}
+      sx={{
+        p: 2,
+        flex: 1,
+      }}
+    >
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          alignItems: 'flex-start',
+        }}
+      >
         <TextField
           size="small"
           label="Ruleset"
@@ -119,7 +138,11 @@ const ElementaryCA = () => {
             <PauseIcon />
           </Button>
         )}
-        <Box flex={1} />
+        <Box
+          sx={{
+            flex: 1,
+          }}
+        />
         <TextField
           size="small"
           label="Generation Size"
@@ -139,10 +162,23 @@ const ElementaryCA = () => {
           onChange={event => setGensCount(event.target.value)}
         />
       </Stack>
-      <Typography variant="h6" flex={1} textAlign="center">
+      <Typography
+        variant="h6"
+        sx={{
+          flex: 1,
+          textAlign: 'center',
+        }}
+      >
         Ruleset: {automaton.ruleset} Generation: {automaton.current}
       </Typography>
-      <Stack direction="column" justifyContent="center" alignItems="stretch" p={2}>
+      <Stack
+        direction="column"
+        sx={{
+          justifyContent: 'center',
+          alignItems: 'stretch',
+          p: 2,
+        }}
+      >
         {generations}
       </Stack>
     </Stack>

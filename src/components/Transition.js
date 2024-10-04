@@ -5,7 +5,14 @@ const Code = styled('code')({
 });
 
 const Transition = ({ title = 'Transition:', code }) => (
-  <Stack component="fieldset" px={2} border={1} borderColor="red">
+  <Stack
+    component="fieldset"
+    sx={{
+      px: 2,
+      border: 1,
+      borderColor: 'red',
+    }}
+  >
     <Typography component="legend">{title}</Typography>
     <Code>{code?.trim()}</Code>
   </Stack>

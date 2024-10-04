@@ -70,8 +70,21 @@ const PolynomialEval = () => {
   );
 
   return (
-    <Stack direction="column" p={2} spacing={2} flex={1}>
-      <Stack direction="row" spacing={2} alignItems="flex-start">
+    <Stack
+      direction="column"
+      spacing={2}
+      sx={{
+        p: 2,
+        flex: 1,
+      }}
+    >
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          alignItems: 'flex-start',
+        }}
+      >
         <TextField
           size="small"
           label="Coefficients"
@@ -101,16 +114,31 @@ const PolynomialEval = () => {
           Step
           <PlayIcon />
         </Button>
-        <Box flex={1} />
+        <Box
+          sx={{
+            flex: 1,
+          }}
+        />
         <Transition code={TRANSITION} />
       </Stack>
       {systolicArray && (
         <>
-          <Stack direction="row" spacing={2} alignItems="flex-start">
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{
+              alignItems: 'flex-start',
+            }}
+          >
             <Typography>Step: {systolicArray.step}</Typography>
             <Typography>Input: {inputValues.join(', ')}</Typography>
           </Stack>
-          <Box p={2} overflow="scroll">
+          <Box
+            sx={{
+              p: 2,
+              overflow: 'scroll',
+            }}
+          >
             <Canvas draw={draw} {...canvasSize} />
           </Box>
         </>

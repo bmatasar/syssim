@@ -84,8 +84,21 @@ const MatrixVector1D = () => {
   );
 
   return (
-    <Stack direction="column" p={2} spacing={2} flex={1}>
-      <Stack direction="row" spacing={2} alignItems="flex-start">
+    <Stack
+      direction="column"
+      spacing={2}
+      sx={{
+        p: 2,
+        flex: 1,
+      }}
+    >
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          alignItems: 'flex-start',
+        }}
+      >
         <Button variant="contained" color="primary" onClick={handleRestart}>
           Restart
           <ReplayIcon />
@@ -94,18 +107,38 @@ const MatrixVector1D = () => {
           Step
           <PlayIcon />
         </Button>
-        <Box flex={1} />
+        <Box
+          sx={{
+            flex: 1,
+          }}
+        />
         <Transition code={TRANSITION} />
       </Stack>
       {systolicArray && (
         <>
           <Typography>Step: {systolicArray.step}</Typography>
-          <Stack direction="row" spacing={8} alignItems="flex-start">
-            <Box p={2} overflow="scroll">
+          <Stack
+            direction="row"
+            spacing={8}
+            sx={{
+              alignItems: 'flex-start',
+            }}
+          >
+            <Box
+              sx={{
+                p: 2,
+                overflow: 'scroll',
+              }}
+            >
               <Canvas draw={draw} {...canvasSize} />
             </Box>
             <Stack spacing={2}>
-              <Typography whiteSpace="pre" fontFamily="monospace">
+              <Typography
+                sx={{
+                  whiteSpace: 'pre',
+                  fontFamily: 'monospace',
+                }}
+              >
                 A:{' '}
                 {matrix
                   .map((row, rowIndex) =>
@@ -117,7 +150,12 @@ const MatrixVector1D = () => {
                   )
                   .join('\n   ')}
               </Typography>
-              <Typography whiteSpace="pre" fontFamily="monospace">
+              <Typography
+                sx={{
+                  whiteSpace: 'pre',
+                  fontFamily: 'monospace',
+                }}
+              >
                 U: {vector.join(', ')}
               </Typography>
             </Stack>

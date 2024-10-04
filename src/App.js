@@ -75,11 +75,23 @@ function App() {
   const Algorithm = algorithm?.component;
 
   return (
-    <Box display="flex" height="100%" bgcolor="pink">
+    <Box
+      sx={{
+        display: 'flex',
+        height: '100%',
+        bgcolor: 'pink',
+      }}
+    >
       <AppBar position="fixed" sx={{ zIndex: theme => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <StyledImg src={logo} alt="Systolic Algorithms" />
-          <Typography variant="h6" color="inherit" noWrap>
+          <Typography
+            variant="h6"
+            noWrap
+            sx={{
+              color: 'inherit',
+            }}
+          >
             Systolic Algorithms Simulator
             {algorithm && ` - ${algorithm.label}`}
           </Typography>
@@ -97,7 +109,11 @@ function App() {
         }}
       >
         <Toolbar />
-        <Box overflow="auto">
+        <Box
+          sx={{
+            overflow: 'auto',
+          }}
+        >
           <List>
             {ALGORITHMS.map(section => (
               <Box key={section.id}>
@@ -118,7 +134,14 @@ function App() {
           </List>
         </Box>
       </Drawer>
-      <Box component="main" flexGrow={1} bgcolor="background.default" p={3}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          bgcolor: 'background.default',
+          p: 3,
+        }}
+      >
         <Toolbar />
         {Algorithm && <Algorithm />}
       </Box>
